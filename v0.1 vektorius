@@ -67,7 +67,7 @@ void ivedimas(studentas Student[], int i)
     }
 }
 
-int atsitiktiniai() //Generuojame random skaiciu intervale nuo 1 iki 10.
+int atsitiktiniai()
 {
     srand(time(NULL));
     return rand() % 10 + 1;
