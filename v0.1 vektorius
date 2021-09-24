@@ -193,7 +193,6 @@ int main()
     }
     if (c == "v" || c == "V") 
     {
-        vidurkio_galutinis_pazymys(Student, stud_skaicius);
         std::cout << std::setw(20) << std::left << "Vardas"
             << std::setw(20) << std::left << "Pavarde";
         std::cout << std::setw(16) << std::left << "Galutinis(vid.)\n"
