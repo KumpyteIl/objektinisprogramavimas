@@ -1,0 +1,273 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <iomanip>
+#include <numeric>
+#include <limits>
+#include <algorithm>
+#include <stdlib.h>
+#include <sstream>
+#include <fstream>
+
+struct studentas {
+    std::string Vardas, Pavarde;
+    std::vector<int> pazymiai = {};
+    int egzaminas;
+    float galutinis_pazymys = 0;
+};
+
+void duomenu_nuskaitymas(studentas Student[], int i)
+{
+    std::cout << "IVESKITE STUDENTO NR. " << i + 1 << " DUOMENIS.\n";
+    std::cout << "Studento nr. " << i + 1 << " vardas yra:\n";
+    std::cin >> Student[i].Vardas;
+    std::cout << "Studento nr. " << i + 1 << " pavarde yra:\n";
+    std::cin >> Student[i].Pavarde;
+    std::cout << "Studento nr. " << i + 1 << " egzamino ivertinimas yra:\n";
+    for (;;)
+    {
+        if (std::cin >> Student[i].egzaminas && Student[i].egzaminas > 0 && Student[i].egzaminas <= 10)
+        {
+            break;
+        }
+        else
+        {
+            if (std::cin.eof()) break;
+            std::cout << "Neteisingai ivedete egzamino ivertinima - bandykite dar karta:\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << std::endl;
+        }
+    }
+}
+
+void ivedimas(studentas Student[], int i)
+{
+    int a;
+    std::cout << "Iveskite studento pazymi (suvedus visus pazymius, iveskite -1):\n";
+    for (;;)
+    {
+        std::cout << "Iveskite studento pazymi:\n";
+        if (std::cin >> a && a <= 10 && a != 0 && a >= -1)
+        {
+            if (a != -1)
+            {
+                Student[i].pazymiai.push_back(a);
+            }
+            else
+            {
+                break;
+            }
+        }
+        else
+        {
+            if (std::cin.eof()) break;
+            std::cout << "Neteisingai ivedete studento pazymi - bandykite dar karta:\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
+}
+
+int atsitiktiniai() 
+{
+    srand(time(NULL));
+    return rand() % 10 + 1;
+}
+
+void atsitiktiniu_nuskaitymas(studentas Student[])
+{
+    int atsitiktinis = atsitiktiniai();
+    for (int i = 0; i < atsitiktinis; i++)
+    {
+        Student[i].pazymiai.push_back(atsitiktiniai());
+    }
+}
+
+double mediana(std::vector<int> student_pazymiai)
+{
+    int kiekis;
+    kiekis = student_pazymiai.size();
+    if (kiekis == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        sort(student_pazymiai.begin(), student_pazymiai.end());
+        for (int i = 0; i < kiekis; i++) {
+        }
+        if (kiekis % 2 == 0)
+        {
+            return (student_pazymiai[kiekis / 2 - 1] + student_pazymiai[kiekis / 2.0]) / 2.0;
+        }
+        else
+        {
+            return student_pazymiai[kiekis / 2.0];
+        }
+    }
+}
+
+void medianos_galutinis_pazymys(studentas student[], int studentu_kiekis)
+{
+
+    for (int i = 0; i < studentu_kiekis; i++)
+    {
+        student[i].galutinis_pazymys = mediana(student[i].pazymiai) * 0.4 + student[i].egzaminas * 0.6;
+    }
+}
+
+void vidurkio_galutinis_pazymys(studentas Student[], int stud_skaicius)
+{
+    float sum;
+    float vid;
+    int elementu_sk;
+    for (int i = 0; i < stud_skaicius; i++) {
+        sum = std::accumulate(Student[i].pazymiai.begin(), Student[i].pazymiai.end(), 0);
+        elementu_sk = (Student[i].pazymiai.size());
+        vid = sum / (Student[i].pazymiai.size());
+        Student[i].galutinis_pazymys = vid * 0.4 + Student[i].egzaminas * 0.6;
+    }
+}
+
+void nuskaitymas(studentas student[])
+{
+    std::string line;
+    std::ifstream ifs("kursiokai.txt");
+    if (!ifs.is_open())
+    {
+        throw (ifs, "File could not be opened");
+    }
+    int i = 0;
+    int g = 0;
+    ifs >> std::ws;
+    while (getline(ifs >> std::ws, line))
+    {
+        std::istringstream iss(line);
+        iss >> student[i].Vardas >> student[i].Pavarde;
+        for (g = 0; g < 15; g++)
+        {
+            iss>>g;
+            student[i].pazymiai.push_back(g);
+        }
+        iss>> student[i].egzaminas;
+        i++;
+    }
+}
+
+void isvedimas(studentas Student[], int stud_skaicius)
+{
+    for (int i = 0; i < stud_skaicius; i++)
+    {
+        std::cout << std::setw(20) << std::left << Student[i].Vardas
+            << std::setw(20) << std::left << Student[i].Pavarde
+            << std::setw(16) << std::left << Student[i].galutinis_pazymys << std::endl;
+    }
+    std::cout << "\n";
+}
+
+void printas_failui(studentas student[])
+{
+    vidurkio_galutinis_pazymys(student, 7);
+    for (int i = 0; i < 7; i++)
+    {
+        std::cout << std::setw(20) << std::left << student[i].Vardas
+            << std::setw(20) << std::left << student[i].Pavarde
+            << std::setw(18) << std::left << student[i].galutinis_pazymys;
+        medianos_galutinis_pazymys(student, 7);
+        std::cout << std::setw(18) << std::left << student[i].galutinis_pazymys;
+    }
+    std::cout << "\n\n";
+}
+
+int main()
+{
+    std::cout << "\n\n";
+    int stud_skaicius;
+    std::string b;
+    std::string c;
+    std::string d;
+    studentas Student[30];
+    std::cout << "Jeigu norite, kad studentu pazymiai butu suvesti is failo, spauskite \"R\".\nJeigu norite suvesti duomenis patys - spauskite \"P\".\n";
+    std::cin >> d;
+    while (d != "r" && d != "R" && d != "p" && d != "P") {
+        std::cout << "Iveskite tai, ko prasoma.\n";
+        std::cin >> d;
+    }
+    if (d == "r" || d == "R")
+    {
+        nuskaitymas(Student);
+        std::cout << std::setw(20) << std::left << "Vardas"
+            << std::setw(20) << std::left << "Pavarde" <<
+            std::setw(18) << std::left << "Galutinis(vid.)/Galutinis(med.)\n"
+            << std::left << "---------------------------------------------------------------------\n";
+        printas_failui(Student);
+    }
+    else {
+        std::cout << "Iveskite studentu skaiciu:\n";
+        for (;;)
+        {
+            if (std::cin >> stud_skaicius)
+            {
+                break;
+            }
+            else
+            {
+                if (std::cin.eof()) break;
+                std::cout << "Neteisingai ivedete studentu skaiciu - bandykite dar karta:\n";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+        }
+        std::cout << "Noredami patys ivesti pazymius, iveskite P.\nJeigu norite generuoti atsitiktinius pazymius, spauskite A.\n";
+        std::cin >> b;
+        while (b != "p" && b != "P" && b != "a" && b != "A") {
+            std::cout << "Neteisingai ivedete simboli - bandykite dar karta:\n";
+            std::cin >> b;
+        }
+
+        if (b == "p" || b == "P")
+        {
+            for (int i = 0; i < stud_skaicius; i++)
+            {
+                duomenu_nuskaitymas(Student, i);
+                ivedimas(Student, i);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < stud_skaicius; i++)
+            {
+                duomenu_nuskaitymas(Student, i);
+                atsitiktiniu_nuskaitymas(Student);
+            }
+        }
+        std::cout << "Norint studento vidutini pazymi skaiciuoti naudojant vidurki, iveskite V\nNorint naudoti mediana, iveskite M\n";
+        std::cin >> c;
+        while (c != "v" && c != "V" && c != "m" && c != "M")
+        {
+            std::cout << "Neteisingai ivedete simboli - bandykite dar karta:\n";
+            std::cin >> c;
+        }
+        if (c == "v" || c == "V")
+        {
+            vidurkio_galutinis_pazymys(Student, stud_skaicius);
+            std::cout << std::setw(20) << std::left << "Vardas"
+                << std::setw(20) << std::left << "Pavarde";
+            std::cout << std::setw(16) << std::left << "Galutinis(vid.)\n"
+                << std::left << "-------------------------------------------------------\n";
+            vidurkio_galutinis_pazymys(Student, stud_skaicius);
+            isvedimas(Student, stud_skaicius);
+        }
+        else
+        {
+            medianos_galutinis_pazymys(Student, stud_skaicius);
+            std::cout << std::setw(20) << std::left << "Vardas"
+                << std::setw(20) << std::left << "Pavarde";
+            std::cout << std::setw(16) << std::left << "Galutinis(med.)\n"
+                << std::left << "-------------------------------------------------------\n";
+            isvedimas(Student, stud_skaicius);
+        }
+    }
+    return 0;
+}
