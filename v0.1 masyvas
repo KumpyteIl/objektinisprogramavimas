@@ -5,6 +5,9 @@
 #include <numeric>
 #include <limits>
 #include <algorithm>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>  
 
 
 struct studentas {
@@ -69,24 +72,26 @@ void ivedimas(studentas Student[], int i)
     }
 }
 
-int atsitiktiniai() 
+int atsitiktiniai()
 {
+    int v;
+    v = 0;
     srand(time(NULL));
-    return rand() % 10 + 1;
+    v = rand() % 10 + 1;
+    return v;
 }
 
-void atsitiktiniu_nuskaitymas(studentas Student[])
+void atsitiktiniu_nuskaitymas(studentas Student[], int studentu_sk)
 {
-    int atsitiktinis = atsitiktiniai();
     int g = 0;
-    for (int i = 0; i < atsitiktinis; i++)
+    for (int i = 0; i < studentu_sk; i++)
     {
         Student[i].pazymiai[g] = atsitiktiniai();
         g++;
     }
 }
 
-double mediana(int student_paz[]) //Skaiciuojame mediana.
+double mediana(int student_paz[])
 {
     int kiekis = 0;
     int x;
@@ -98,13 +103,13 @@ double mediana(int student_paz[]) //Skaiciuojame mediana.
     }
     else
     {
-        for (int i = 0; i < kiekis; i++) 
+        for (int i = 0; i < kiekis; i++)
         {
-            for (int g = 0; g < kiekis; g++) 
+            for (int g = 0; g < kiekis; g++)
             {
-                for (int v = g + 1; v < kiekis; v++) 
+                for (int v = g + 1; v < kiekis; v++)
                 {
-                    if (student_paz[g] > student_paz[v]) 
+                    if (student_paz[g] > student_paz[v])
                     {
                         x = student_paz[g];
                         student_paz[g] = student_paz[v];
@@ -140,7 +145,7 @@ void vidurkio_galutinis_pazymys(studentas Student[], int stud_skaicius)
     float sum = 0;
     float vid;
     int g = 0;
-    for (int i = 0; i < stud_skaicius; i++) 
+    for (int i = 0; i < stud_skaicius; i++)
     {
         while (Student[i].pazymiai[g] > 0)
         {
@@ -208,7 +213,7 @@ int main()
         for (int i = 0; i < stud_skaicius; i++)
         {
             duomenu_nuskaitymas(Student, i);
-            atsitiktiniu_nuskaitymas(Student);
+            atsitiktiniu_nuskaitymas(Student, 8);
         }
     }
     std::cout << "Norint studento vidutini pazymi skaiciuoti naudojant vidurki, iveskite V\nNorint naudoti mediana, iveskite M\n";
