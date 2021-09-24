@@ -74,17 +74,14 @@ void ivedimas(studentas Student[], int i)
 
 int atsitiktiniai()
 {
-    int v;
-    v = 0;
     srand(time(NULL));
-    v = rand() % 10 + 1;
-    return v;
+    return rand() % 10 + 1;
 }
 
-void atsitiktiniu_nuskaitymas(studentas Student[], int studentu_sk)
+void atsitiktiniu_nuskaitymas(studentas Student[], int i, int studentu_sk)
 {
     int g = 0;
-    for (int i = 0; i < studentu_sk; i++)
+    for (int j = 0; j < studentu_sk; j++)
     {
         Student[i].pazymiai[g] = atsitiktiniai();
         g++;
@@ -213,7 +210,7 @@ int main()
         for (int i = 0; i < stud_skaicius; i++)
         {
             duomenu_nuskaitymas(Student, i);
-            atsitiktiniu_nuskaitymas(Student, 8);
+            atsitiktiniu_nuskaitymas(Student, i, 5);
         }
     }
     std::cout << "Norint studento vidutini pazymi skaiciuoti naudojant vidurki, iveskite V\nNorint naudoti mediana, iveskite M\n";
