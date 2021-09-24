@@ -202,12 +202,12 @@ int main()
         isvedimas(Student, stud_skaicius);
     }
     else
-    {
-        medianos_galutinis_pazymys(Student, stud_skaicius);
+   {
         std::cout << std::setw(20) << std::left << "Vardas"
             << std::setw(20) << std::left << "Pavarde";
         std::cout << std::setw(16) << std::left << "Galutinis(med.)\n"
             << std::left << "-------------------------------------------------------\n";
+        medianos_galutinis_pazymys(Student, stud_skaicius);
         isvedimas(Student, stud_skaicius);
     }
     return 0;
